@@ -1,13 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
 import {bundleResourceIO, decodeJpeg} from '@tensorflow/tfjs-react-native';
-
 import {Base64Binary} from '../utils/utils';
+
 const BITMAP_DIMENSION = 224;
-
-const URL = "https://teachablemachine.withgoogle.com/models/kyObC_5bE/";
-
-const modelJson = URL + 'model.json';
 
 // TENSORFLOW_CHANNEL specifies RGB images
 const TENSORFLOW_CHANNEL = 3;
@@ -17,10 +13,13 @@ export const getModel = async () => {
     // Wait for TensorFlow to be ready
     await tf.ready();
 
-    // Load the trained model (this loads the weights automatically)
-    const model = await tf.loadLayersModel(modelJson);
-
+    const modelJson = require('../assets/model/model.json');
+    const modelWeights = require('../assets/model/weights.bin');
+  
+    const model = await tf.loadLayersModel(bundleResourceIO(modelJson, modelWeights))
+    
     console.log('Model successfully loaded');
+
     return model;
   } catch (error) {
     console.log('Could not load model', error);
